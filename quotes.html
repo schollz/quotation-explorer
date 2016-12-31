@@ -1,0 +1,45 @@
+<html>
+
+<head>
+<title>Quotation Explorer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+a { color: inherit; text-decoration:none; }
+</style>
+</head>
+
+<body>
+  <h2><a href="/">Quotation Explorer</a> {{ with .Topic }}<small> - '{{ . }}'</small>{{ end }}</h2>
+    {{range .Quotations}}
+    <blockquote>{{.Html}} {{ with .Name}} - <i>{{.}}</i>{{end}}</blockquote>
+    {{end}}
+
+    {{ if .About }}
+
+    <blockquote>
+  <p>
+    A simple way to navigate quotes.
+  </p>
+  <p>
+  Search for quotes, or just click any word or name in a quote to explore more.
+  </p>
+    </blockquote>
+
+    {{ end }}
+
+    <blockquote>
+    <form action="/search/" method = "POST">
+    <small>
+      Click any word or name in a quote to explore, or search for more. <a id="json" href="">[JSON]</a>&nbsp;<a href="https://github.com/schollz/quotation-explorer">[SOURCE]</a>&nbsp;
+    </small>
+    <input name="term">
+    <input type="submit" value="Search">
+    </form>
+    </blockquote>
+
+<script>
+document.getElementById("json").setAttribute('href', window.location.href + ".json");
+</script>
+</body>
+
+</html>
