@@ -122,7 +122,11 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
 	term := strings.TrimSpace(strings.ToLower(r.FormValue("term")))
-	http.Redirect(w, r, "/subject/"+term, http.StatusFound)
+	if len(term) > 2 {
+		http.Redirect(w, r, "/subject/"+term, http.StatusFound)
+	} else {
+		http.Redirect(w, r, "/random/1", http.StatusFound)
+	}
 }
 
 func aboutHandler(w http.ResponseWriter, r *http.Request) {
