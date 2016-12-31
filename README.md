@@ -19,7 +19,7 @@ go build
 
 ## Usage
 
-Open a web browser and explore quotations! Explore over 200,000 quotes, with the click of a mouse.
+Open a web browser and explore quotations! Explore over 120,000 quotes, with the click of a mouse.
 
 ## More information
 
