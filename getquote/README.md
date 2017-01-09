@@ -3,7 +3,7 @@
 Install:
 
 ```
-go get github.com/schollz/quotetation-explorer/getquote
+go get github.com/schollz/quotation-explorer/getquote
 ```
 
 Use:
