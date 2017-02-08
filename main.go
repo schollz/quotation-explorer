@@ -11,7 +11,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 )
 
@@ -32,11 +31,6 @@ type QuotationBlock struct {
 	Name  template.HTML
 	Topic string
 }
-
-var quotes = struct {
-	sync.RWMutex
-	q []Quote
-}{q: make([]Quote, 0)}
 
 var templates = template.Must(template.ParseFiles("quotes.html"))
 

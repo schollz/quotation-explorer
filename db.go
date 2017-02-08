@@ -10,10 +10,15 @@ import (
 	"log"
 	"math/rand"
 	"strings"
+	"sync"
 
 	"github.com/boltdb/bolt"
 	"github.com/cheggaaa/pb"
 )
+
+func init() {
+	go cacheRandomQuotes(2000)
+}
 
 func getQuotesFromIndex(index string) []Quote {
 	index = cleanString(index)
@@ -83,14 +88,42 @@ func getQuotesFromIndex(index string) []Quote {
 	return quotes
 }
 
+var randomQuotePool = struct {
+	sync.RWMutex
+	q []Quote
+}{q: make([]Quote, 0)}
+
 func getRandomQuotes(num int) []Quote {
 	if num < 1 {
 		num = 1
 	} else if num > 50 {
 		num = 50
 	}
-	quotes := make([]Quote, num)
+	var quotes []Quote
+	randomQuotePool.RLock()
+	if len(randomQuotePool.q) > num {
+		quotes = randomQuotePool.q[0:num]
+	} else {
+		quotes = generateRandomQuotes(num)
+	}
+	randomQuotePool.RUnlock()
+	go cacheRandomQuotes(num)
+	return quotes
+}
 
+func cacheRandomQuotes(num int) {
+	randomQuotePool.Lock()
+	if len(randomQuotePool.q) == 0 {
+		randomQuotePool.q = generateRandomQuotes(num)
+	} else {
+		randomQuotePool.q = randomQuotePool.q[num:]
+		randomQuotePool.q = append(randomQuotePool.q, generateRandomQuotes(num)...)
+	}
+	randomQuotePool.Unlock()
+}
+
+func generateRandomQuotes(num int) []Quote {
+	quotes := make([]Quote, num)
 	db, err := bolt.Open("quotations.db", 0600, nil)
 	if err != nil {
 		log.Printf("Error: %v\n", err)
