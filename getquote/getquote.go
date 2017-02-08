@@ -5,9 +5,34 @@ import (
 	"math"
 	"net/http"
 	"strings"
+	"sync"
 )
 
+var randomQuotePool = struct {
+	sync.RWMutex
+	q string
+}{q: ""}
+
+func init() {
+	cacheQuote()
+}
+
 func GetQuote() string {
+	var quote string
+	randomQuotePool.RLock()
+	quote = randomQuotePool.q
+	randomQuotePool.RUnlock()
+	go cacheQuote()
+	return quote
+}
+
+func cacheQuote() {
+	randomQuotePool.Lock()
+	randomQuotePool.q = downloadQuote()
+	randomQuotePool.Unlock()
+}
+
+func downloadQuote() string {
 	type QuotesSchollz []struct {
 		ID   int    `json:"ID"`
 		Text string `json:"Text"`
