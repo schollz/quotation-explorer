@@ -16,10 +16,6 @@ import (
 	"github.com/cheggaaa/pb"
 )
 
-func init() {
-	go cacheRandomQuotes(2000)
-}
-
 func getQuotesFromIndex(index string) []Quote {
 	index = cleanString(index)
 
@@ -114,7 +110,7 @@ func getRandomQuotes(num int) []Quote {
 func cacheRandomQuotes(num int) {
 	randomQuotePool.Lock()
 	if len(randomQuotePool.q) == 0 {
-		randomQuotePool.q = generateRandomQuotes(num)
+		randomQuotePool.q = generateRandomQuotes(2000)
 	} else {
 		randomQuotePool.q = randomQuotePool.q[num:]
 		randomQuotePool.q = append(randomQuotePool.q, generateRandomQuotes(num)...)
